@@ -1,67 +1,350 @@
+/* Palette: #c0bdc8 backdrop · #fdfdfd paper · #474955 slate · #f3db75 gold · #8d7b69 taupe */
+
+:root {
+  --bg: #c0bdc8;
+  --card: #fdfdfd;
+  --field: #fdfdfd;
+  --ink: #474955;
+  --muted: #8d7b69;
+  --line: #c0bdc8;
+  --accent: #f3db75;
+  --accent-ink: #474955;
+  --focus: #8d7b69;
+  --accent-soft: rgba(243, 219, 117, 0.55);
+  --btn: #474955;
+  --btn-ink: #fdfdfd;
+  --btn-hover: #3a3c47;
+  --ok: #474955;
+  --err: #a3453a;
+  --speed: 0.16s;
+}
+
+html.dark {
+  --bg: #05070e;
+  --card: #0e111a;
+  --field: #141824;
+  --ink: #e8eaef;
+  --muted: #9aa3b2;
+  --line: #222836;
+  --accent: #f5d76e;
+  --accent-ink: #0b0b0f;
+  --focus: #f5d76e;
+  --accent-soft: rgba(245, 215, 110, 0.22);
+  --btn: #f5d76e;
+  --btn-ink: #0b0b0f;
+  --btn-hover: #ffe98a;
+  --ok: #8fd694;
+  --err: #ff8a8a;
+}
+
+/* Layout */
+
 body {
   margin: 0;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+  background: var(--bg);
   font-family: "Segoe UI", sans-serif;
-  color: #e0e0e0;
+  color: var(--ink);
+  transition: background-color var(--speed) ease, color var(--speed) ease;
+}
+
+input,
+button {
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 .card {
-  background: rgba(40, 40, 40, 0.4);
-  backdrop-filter: blur(12px);
-  padding: 35px;
+  position: relative;
+  z-index: 1;
   width: 360px;
+  max-width: calc(100vw - 32px);
+  padding: 35px;
   border-radius: 16px;
-  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+  border: 1px solid var(--line);
+  background: var(--card);
+  box-shadow: 0 8px 22px rgba(71, 73, 85, 0.16);
   text-align: center;
-  border: 1px solid rgba(255,255,255,0.05);
+  animation: card-in 0.24s ease-out both;
+  transition: background-color var(--speed) ease, border-color var(--speed) ease,
+    box-shadow var(--speed) ease;
+}
+
+/* Thin gold edge — one lit line, no filters or blur. */
+.card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+html.dark .card {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
 }
 
 h1 {
   margin-bottom: 25px;
   font-weight: 600;
-  color: #dcdcdc;
+  color: var(--ink);
 }
+
+/* Fields */
 
 input {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
   border-radius: 10px;
-  border: none;
+  border: 1px solid var(--line);
   outline: none;
-  background: rgba(60, 60, 60, 0.6);
-  color: white;
+  background: var(--field);
+  color: var(--ink);
   font-size: 15px;
-  transition: 0.2s;
+  transition: background-color var(--speed) ease, border-color var(--speed) ease,
+    box-shadow var(--speed) ease;
+}
+
+input::placeholder {
+  color: var(--muted);
 }
 
 input:focus {
-  background: rgba(80, 80, 80, 0.7);
+  background: var(--card);
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-button {
+/* Buttons */
+
+#launchBtn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #3a3a3a, #505050);
-  border: none;
+  background: var(--btn);
+  color: var(--btn-ink);
+  border: 1px solid transparent;
   border-radius: 10px;
-  color: white;
   font-size: 16px;
   cursor: pointer;
-  transition: 0.25s;
+  transition: background-color var(--speed) ease, color var(--speed) ease,
+    transform var(--speed) ease;
 }
 
-button:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, #505050, #6a6a6a);
+#launchBtn:hover {
+  background: var(--btn-hover);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+#launchBtn:active {
+  transform: translateY(0);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color var(--speed) ease, color var(--speed) ease,
+    border-color var(--speed) ease, transform var(--speed) ease;
+}
+
+.theme-toggle:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+  transform: translateY(-1px);
+}
+
+#launchBtn:focus-visible,
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Text */
+
+.status {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--ok);
+}
+
+.status:empty {
+  margin: 0;
+}
+
+.status.error {
+  color: var(--err);
 }
 
 .hint {
   margin-top: 15px;
   font-size: 13px;
-  color: #9a9a9a;
+  color: var(--muted);
+}
+
+/* Credits — both read the same tokens, so they restyle with the theme. */
+
+.credit {
+  position: fixed;
+  top: 24px;
+  left: 22px;
+  z-index: 2;
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  transition: color var(--speed) ease;
+}
+
+.credit::before,
+.made-by::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 1px;
+}
+
+.made-by {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 16px;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  transition: background-color var(--speed) ease, color var(--speed) ease,
+    border-color var(--speed) ease;
+}
+
+/* Midnight rural sky — hidden until night mode. Five tiled gradients total,
+   one twinkling layer, and a single inline SVG for the constellations. */
+
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  background-image: radial-gradient(
+      120% 55% at 50% 108%,
+      rgba(245, 215, 110, 0.16),
+      transparent 62%
+    ),
+    linear-gradient(180deg, #04060c 0%, #0a1020 58%, #111c31 100%);
+  transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+
+html.dark .sky {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.35s ease;
+}
+
+.sky::before,
+.sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+}
+
+.sky::before {
+  background-image: radial-gradient(1px 1px at 12px 18px, rgba(255, 255, 255, 0.85), transparent),
+    radial-gradient(1px 1px at 74px 96px, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.4px 1.4px at 140px 40px, rgba(245, 215, 110, 0.9), transparent);
+  background-size: 210px 210px, 190px 190px, 320px 320px;
+}
+
+.sky::after {
+  background-image: radial-gradient(1px 1px at 40px 60px, rgba(255, 255, 255, 0.75), transparent),
+    radial-gradient(1.2px 1.2px at 110px 26px, rgba(232, 234, 239, 0.8), transparent);
+  background-size: 240px 240px, 300px 300px;
+}
+
+html.dark .sky::after {
+  animation: twinkle 6s ease-in-out infinite;
+}
+
+.constellations {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.constellations line {
+  stroke: rgba(245, 215, 110, 0.3);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.constellations circle {
+  fill: rgba(245, 215, 110, 0.6);
+}
+
+/* Motion — transform/opacity only, short and compositor-friendly. */
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
